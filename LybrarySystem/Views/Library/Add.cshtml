@@ -1,0 +1,46 @@
+﻿@model LibraryViewModel
+
+<h2>Add Library</h2>
+
+<form asp-controller="Library" asp-action="Add" method="post">
+    <div class="form-group">
+        <label for="category">Category:</label>
+        <select id="category" name="SelectedCategoryId" class="form-control">
+            <option value="">Select a category</option>
+            @foreach (var category in Model.Categories)
+            {
+                <option value="@category.Value">@category.Text</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="subcategory">Subcategory:</label>
+        <select id="subcategory" name="SelectedSubcategoryId" class="form-control">
+            <option value="">Select a subcategory</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#category').change(function () {
+                var categoryId = $(this).val();
+                if (categoryId) {
+                    $.ajax({
+                        url: '@Url.Action("GetSubcategories", "Library")',
+                        data: { categoryId: categoryId },
+                        success: function (result) {
+                            $('#subcategory').html(result);
+                        }
+                    });
+                } else {
+                    $('#subcategory').empty();
+                }
+            });
+        });
+    </script>
+}
